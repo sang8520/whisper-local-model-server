@@ -28,12 +28,16 @@ const baseDir = process.env.WHISPER_MODEL_DIR
     ? path.dirname(path.resolve(process.argv[1] || "."))
     : path.dirname(process.execPath);
 const ROOT = path.join(baseDir, "models");
+// onnxruntime 的 wasm 运行时也由这里提供，站点发布包就不必背 4.8MB
+const ORT_ROOT = path.join(baseDir, "ort");
 
 const TYPES = {
   ".json": "application/json; charset=utf-8",
   ".txt": "text/plain; charset=utf-8",
   ".onnx": "application/octet-stream",
   ".wasm": "application/wasm",
+  ".gz": "application/gzip",
+  ".mjs": "text/javascript; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
   ".html": "text/html; charset=utf-8",
 };
@@ -102,8 +106,10 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  const file = path.join(ROOT, pathname);
-  if (!file.startsWith(ROOT + path.sep) || !existsSync(file)) {
+  const usingOrt = pathname.startsWith("/ort/");
+  const fileRoot = usingOrt ? ORT_ROOT : ROOT;
+  const file = path.join(fileRoot, usingOrt ? pathname.slice("/ort".length) : pathname);
+  if (!file.startsWith(fileRoot + path.sep) || !existsSync(file)) {
     res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
     res.end("not found");
     return;
@@ -174,6 +180,7 @@ server.listen(PORT, HOST, () => {
   console.log(`  模型目录：${ROOT}`);
   const models = listModels();
   console.log(`  可用模型：${models.length ? models.join(", ") : "（没有找到，检查 models/onnx-community/）"}`);
+  console.log(`  转写运行时：${existsSync(ORT_ROOT) ? "已就绪" : "缺失（浏览器转写会失败，检查 ort/ 目录）"}`);
   console.log("");
   console.log("  保持这个窗口开着；关闭窗口即停止服务。");
   console.log("");
