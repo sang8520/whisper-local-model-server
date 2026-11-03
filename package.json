@@ -1,0 +1,17 @@
+{
+  "name": "whisper-model-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "本地 Whisper 权重静态服务：给公网网站提供带 CORS 的模型下载源",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "prepare-models": "node prepare-models.mjs",
+    "build:bundle": "esbuild server.mjs --bundle --platform=node --format=cjs --target=node20 --outfile=build/model-server.cjs",
+    "build:sea": "node --experimental-sea-config sea-config.json"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "postject": "^1.0.0-alpha.6"
+  }
+}
