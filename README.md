@@ -8,7 +8,7 @@
 
 ## 下载
 
-前往 [Releases](../../releases/latest) 下载 `Whisper本地模型服务-win64.zip`（约 101 MB，含 exe 与
+前往 [Releases](../../releases/latest) 下载 `whisper-local-model-server-win64.zip`（约 101 MB，含 exe 与
 whisper-tiny.en / whisper-base.en 两个 INT8 量化模型）。
 
 ## 使用
