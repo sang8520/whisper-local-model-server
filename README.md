@@ -19,10 +19,14 @@ whisper-tiny.en / whisper-base.en 两个 INT8 量化模型）。
    model-server.exe
    models\onnx-community\whisper-tiny.en\...
    models\onnx-community\whisper-base.en\...
+   ort\ort-wasm-simd-threaded.jsep.wasm.gz
+   ort\ort-wasm-simd-threaded.jsep.mjs
    ```
 
-2. 双击 `model-server.exe`，窗口显示 `地址：http://127.0.0.1:5981/` 即启动成功。
-   **保持窗口开着**；关闭窗口即停止服务。
+   `ort/` 是浏览器里的推理运行时。站点发布包受上传体积限制不带它，所以也由本地服务提供。
+
+2. 双击 `model-server.exe`，窗口显示 `地址：http://127.0.0.1:5981/` 和
+   `转写运行时：已就绪` 即启动成功。**保持窗口开着**；关闭窗口即停止服务。
 3. 打开网站 → 听力 → 设置 → 转写通道选「本机浏览器（需下载模型）」→
    下载源选「本地模型服务」→ 地址填 `http://127.0.0.1:5981/`。
 4. 点「下载模型」，几秒完成（读的是本机文件）→ 回听力页导入视频即可转写。
@@ -37,6 +41,7 @@ whisper-tiny.en / whisper-base.en 两个 INT8 量化模型）。
 - **Windows 安全中心拦截**：点「更多信息 → 仍要运行」。程序没有数字签名。
 - **只支持英语**：模型是 `whisper-*.en`。
 - **网站提示下载失败**：确认黑色窗口还在、地址末尾带 `/`、防火墙没有拦 Node。
+- **窗口显示「转写运行时：缺失」**：解压时漏掉了 `ort/` 文件夹，重新完整解压。
 
 ## 安全边界
 
@@ -59,6 +64,7 @@ WHISPER_MODEL_DIR=/path/to/parent node server.mjs   # 模型放在别处时
 model-server/
 ├── model-server.exe        # 构建产物（Release 里提供）
 ├── server.mjs              # 源码，可直接 node server.mjs
+├── ort/                     # onnxruntime wasm 运行时（站点发布包不带）
 └── models/
     └── onnx-community/
         ├── whisper-tiny.en/
